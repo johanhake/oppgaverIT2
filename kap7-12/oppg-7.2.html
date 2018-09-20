@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Oppgave 7.2</title>
+    <style>
+        div {
+            display: inline-block;
+            width: 50px;
+            height: 25px;
+        }
+
+        div:hover{
+            transform: rotate(2turn) scale(3);
+            transition: 1s;
+        }
+    </style>
+</head>
+<body>
+<a href="../index.html">Tilbake...</a><br>
+</body>
+<script>
+    let body = document.body;
+
+    for (let i=0; i<360; i++){
+        body.innerHTML += `<div style='background-color: hsl(${i},100%, 50%)'></div>`;
+    }
+</script>
+</html>
