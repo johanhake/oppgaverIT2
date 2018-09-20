@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Oppgave 8.3</title>
+    <style>
+        div{
+            font-family: Verdana, sans-serif;
+            width: 400px;
+            height: 400px;
+            border: black 3px solid;
+        }
+    </style>
+</head>
+<body>
+<a href="../index.html">Tilbake...</a><br>
+<div></div>
+</body>
+<script>
+    let kvadrat = document.querySelector("div");
+
+    document.addEventListener("keypress", function(event) {
+        if (32 <= event.keyCode && event.keyCode <= 126) {
+            kvadrat.innerHTML += String.fromCharCode(event.keyCode);
+        }
+    })
+</script>
+</html>
