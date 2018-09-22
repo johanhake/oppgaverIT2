@@ -20,8 +20,8 @@
     let kvadrat = document.querySelector("div");
 
     document.addEventListener("keypress", function(event) {
-        if (32 <= event.keyCode && event.keyCode <= 126) {
-            kvadrat.innerHTML += String.fromCharCode(event.keyCode);
+        if (32 <= event.charCode && event.charCode <= 126) {
+            kvadrat.innerHTML += String.fromCharCode(event.charCode);
         }
     })
 </script>
