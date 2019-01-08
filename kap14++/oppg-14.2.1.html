@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Skyskraper v 2.0</title>
+</head>
+<body>
+<a href="../index.html">Tilbake...</a><br>
+<canvas width="500" height="300"></canvas>
+<script>
+    // DOM
+    let canvas = document.querySelector("canvas");
+    let ctx = canvas.getContext("2d");
+
+    /* Tegner en blokk på canvasen
+     *
+     * Argument (contex) ctx : 2D konteksten som blokkene skal tegnes på
+     * Argument (Number) xStart : start x for blokken (venstre verdi)
+     * Argument (Number) yStart : start y for blokken (nedre verdi)
+     * Argument (Number) antallVinduer : Antall vindu i bredden
+     * Argument (Number) antallEtasjer : Antall etasjer blokken skal ha
+     */
+    function tegnBlock(ctx, xStart, yStart, antallVinduer, antallEtasjer){
+        // Avstander til bruk i tegningen (px)
+        let vindueBredde = 10;
+        let vindueHoyde = 15;
+        let vindueOffset = 5;
+        let etasjeOffset = 10;
+
+        // Bredde og høyde på blokken
+        let blokkBredde = (vindueBredde + vindueOffset)*antallVinduer + vindueOffset;
+        let blokkHoyde = (vindueHoyde + etasjeOffset)*antallEtasjer + etasjeOffset;
+        console.log(blokkBredde, blokkHoyde);
+
+        // Tegner blokken
+        ctx.fillStyle = "black";
+        ctx.fillRect(xStart, yStart-blokkHoyde, blokkBredde, blokkHoyde);
+
+        // Tegner vinduene gjennom to for-løkker
+        ctx.fillStyle = "yellow";
+        for (let etasje = 0; etasje < antallEtasjer; etasje++) {
+            for (let vindueNr = 0; vindueNr < antallVinduer; vindueNr++) {
+                let x = xStart + (vindueOffset + vindueBredde)*vindueNr  + vindueOffset;
+                let y = yStart - blokkHoyde + (etasjeOffset + vindueHoyde) * etasje + etasjeOffset;
+                ctx.fillRect(x, y, vindueBredde, vindueHoyde);
+                console.log(x, y, vindueBredde, vindueHoyde);
+            }
+        }
+    }
+
+    tegnBlock(ctx, 20, 280, 3, 5);
+    tegnBlock(ctx, 120, 280, 6, 10);
+    tegnBlock(ctx, 420, 280, 5, 7);
+</script>
+</body>
+</html>
