@@ -46,6 +46,18 @@
         // Angir sirkelens radius
         let radius = 100;
 
+        // Starter teksten litt over halvveis langs x-aksen
+        let tekstX = canvas.width / 1.7;
+
+        // Starter teksten i y-ledd slik at den blir midtstilt langs y-aksen
+        let tekstY = canvas.height/2 - 30*data.length/2;
+
+        // Angir tekststørrelse og skrifttype
+        ctx.font = "24px 'Century Gothic'";
+
+        // Teksten plasseres nedenfor punktet den skrives til
+        ctx.textBaseline = "hanging";
+
         // Variabel som lagrer summen av verdiene
         let sum = 0;
 
@@ -59,36 +71,42 @@
 
         // Går gjennom alle verdiene og tegner kakestykker for hver av dem
         for (let i = 0; i < data.length; i++) {
+
             // Beregner kakestykkets andel
             let andel = data[i].verdi / sum;
+
             // Finner stykkets størrelse
             let stykkeStr = andel * helsirkel;
+
             // Beregner hvor stykket skal slutte
             let kakeSlutt = forrigeSlutt + stykkeStr;
+
             // Lager en ny path
             ctx.beginPath();
+
             // Tegner en sirkelsektor
             ctx.arc(sentrumX, sentrumY, radius, forrigeSlutt, kakeSlutt);
+
             // Fullfører sirkelsektoren inn til sirkelens sentrum
             ctx.lineTo(sentrumX, sentrumY);
+
             // Setter en ny farge for kakestykket
             ctx.fillStyle = farger[i];
+
             // Skraverer kakestykket
             ctx.fill();
+
             // Avslutter sirkelsektoren
             ctx.closePath();
+
             // Oppdaterer variabelen forrigeSlutt
             forrigeSlutt = kakeSlutt;
-            // Angir tekststørrelse og skrifttype
-            ctx.font = "24px 'Century Gothic'";
-            // Teksten plasseres nedenfor punktet den skrives til
-            ctx.textBaseline = "hanging";
-            // Starter teksten litt over halvveis langs x-aksen
-            let tekstStartX = canvas.width / 1.7;
-            // Starter teksten slik at den blir midtstilt langs y-aksen
-            let tekstStartY = (canvas.height / 2) - (30 * (data.length / 2)) + (30 * i);
+
             // Skriver ut beskrivelsen med verdien i parentes
-            ctx.fillText(data[i].beskrivelse + "(" + data[i].verdi + ")", tekstStartX, tekstStartY);
+            ctx.fillText(`${data[i].beskrivelse}(${data[i].verdi})`, tekstX, tekstY);
+
+            // Legger til 30px til tekstY slik at teksten flytter seg lenger
+            tekstY += 30;
         }
     }
 
