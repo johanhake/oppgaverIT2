@@ -2,140 +2,94 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Interaktivt kakediagram</title>
-    <link rel="stylesheet" href="../brukerinput.css">
-    <style>
-        form {
-            width: 500px;
-        }
-    </style>
+    <title>Linjediagram</title>
 </head>
 <body>
 <a href="../index.html">Tilbake...</a><br>
-<canvas height="300" width="500"></canvas>
-<form onsubmit="tegnPaNytt(event)">
-    <label>Beskrivelse</label><input id=inpBeskrivelse type="text">
-    <label>Verdi</label><input id=inpVerdi type="number" min="0" max="100">
-    <button type="submit">Send inn</button>
-</form>
+<h1>Linjediagram</h1>
+<canvas width="600" height="300"></canvas>
 </body>
 <script>
     // Variabler
-    let data = [];
+    let ukeData = [
+        {
+            beskrivelse: 'Mandag',
+            verdi: 5,
+        }, {
+            beskrivelse: 'Tirsdag',
+            verdi: 3,
+        }, {
+            beskrivelse: 'Onsdag',
+            verdi: 1,
+        }, {
+            beskrivelse: 'Torsdag',
+            verdi: 2,
+        }, {
+            beskrivelse: 'Fredag',
+            verdi: 5,
+        }, {
+            beskrivelse: 'Lørdag',
+            verdi: 6,
+        }, {
+            beskrivelse: 'Søndag',
+            verdi: 4,
+        }];
     let canvas = document.querySelector("canvas");
     let ctx = canvas.getContext("2d");
 
-    /* Funksjon som tegner et kakediagram
-     * (fra løsningsforslag i boken)
-     * Argument (liste) data : en liste med objekter som alle har egenskapene navn og verdi
-     */
-    function tegnKakediagram(data) {
-        // En array med 12 farger
-        // Hentet fra www.colorbrewer.org
-        let farger = ["#a6cee3", "#1f78b4", "#b2df8a", "#33a02c", "#fb9a99", "#e31a1c", "#fdbf6f", "#ff7f00", "#cab2d6", "#6a3d9a", "#ffff99", "#b15928"];
+    // Tegner et linje diagram
+    function linjeDiagram(data){
 
-        // Angir at en hel sirkel er Math.PI * 2 radianer
-        let helsirkel = Math.PI * 2;
+        let maks = 0;
 
-        // Setter sirkelens sentrum langs x-aksen
-        let sentrumX = canvas.width / 3;
-
-        // Setter sirkelens sentrum langs y-aksen
-        let sentrumY = canvas.height / 2;
-
-        // Angir sirkelens radius
-        let radius = 100;
-
-        // Starter teksten litt over halvveis langs x-aksen
-        let tekstX = canvas.width / 1.7;
-
-        // Starter teksten i y-ledd slik at den blir midtstilt langs y-aksen
-        let tekstY = canvas.height/2 - 30*data.length/2;
-
-        // Angir tekststørrelse og skrifttype
-        ctx.font = "24px 'Century Gothic'";
-
-        // Teksten plasseres nedenfor punktet den skrives til
-        ctx.textBaseline = "hanging";
-
-        // Variabel som lagrer summen av verdiene
-        let sum = 0;
-
-        // Finner summen av verdiene
+        // Finner maks verdien
         for (let i = 0; i < data.length; i++) {
-            sum += data[i].verdi;
+            if (data[i].verdi > maks) {
+                maks = data[i].verdi;
+            }
         }
 
-        // Variabel som lagrer hvor forrige "kakestykke" sluttet
-        let forrigeSlutt = 0;
+        // Parametre for tegningen
+        let yBaslinje = 30;
+        let dx = 75;
+        let margin = 30;
+        let radie = 4;
+        let maksHoeyde = canvas.height - (margin + yBaslinje);
+        ctx.font = "16px 'Century Gothic'";
+        ctx.textAlign = "center";
 
-        // Går gjennom alle verdiene og tegner kakestykker for hver av dem
+        // Går igjennom resten av dataene
         for (let i = 0; i < data.length; i++) {
 
-            // Beregner kakestykkets andel
-            let andel = data[i].verdi / sum;
+            // Finner Høyden og y start
+            let hoeyde = data[i].verdi/maks * maksHoeyde;
+            let yPos = canvas.height - (margin+hoeyde);
+            if (i === 0){
+                ctx.moveTo(margin+i*dx, yPos);
+            }
+            else {
+                ctx.lineTo(margin+i*dx, yPos);
+            }
+        }
+        ctx.stroke();
 
-            // Finner stykkets størrelse
-            let stykkeStr = andel * helsirkel;
-
-            // Beregner hvor stykket skal slutte
-            let kakeSlutt = forrigeSlutt + stykkeStr;
-
-            // Lager en ny path
+        // Tegner punkter
+        for (let i = 0; i < data.length; i++) {
+            // Finner Høyden og y start
+            let hoeyde = data[i].verdi/maks * maksHoeyde;
+            let yPos = canvas.height - (margin+hoeyde);
             ctx.beginPath();
-
-            // Tegner en sirkelsektor
-            ctx.arc(sentrumX, sentrumY, radius, forrigeSlutt, kakeSlutt);
-
-            // Fullfører sirkelsektoren inn til sirkelens sentrum
-            ctx.lineTo(sentrumX, sentrumY);
-
-            // Setter en ny farge for kakestykket
-            ctx.fillStyle = farger[i];
-
-            // Skraverer kakestykket
-            ctx.fill();
-
-            // Avslutter sirkelsektoren
+            ctx.arc(margin+i*dx, yPos, radie, 0, 2*Math.PI);
             ctx.closePath();
-
-            // Oppdaterer variabelen forrigeSlutt
-            forrigeSlutt = kakeSlutt;
-
-            // Skriver ut beskrivelsen med verdien i parentes
-            ctx.fillText(`${data[i].beskrivelse}(${data[i].verdi})`, tekstX, tekstY);
-
-            // Legger til 30px til tekstY slik at teksten flytter seg lenger
-            tekstY += 30;
+            ctx.fillStyle = `hsl(${i*30}, 100%, 50%)`;
+            ctx.fill()
+            ctx.stroke();
+            ctx.fillStyle = "black";
+            ctx.fillText(data[i].beskrivelse, margin+i*dx, canvas.height - margin);
         }
     }
 
-    // Henter data og tegner kakediagrammet på nytt
-    function tegnPaNytt(event){
-        event.preventDefault();
-
-        // Henter ut verdier fra skjemaet
-        let beskrivelse = document.querySelector("#inpBeskrivelse").value;
-        let verdi = Number(document.querySelector("#inpVerdi").value);
-
-        document.querySelector("#inpBeskrivelse").value = "";
-        document.querySelector("#inpVerdi").value = "";
-
-        console.log(beskrivelse, verdi);
-
-        // Legger inn verdiene i data-listen
-        data.push({
-            beskrivelse: beskrivelse,
-            verdi: verdi
-        });
-
-        // Sletter data i canvas før vi tegner nytt kakediagram
-        ctx.fillStyle = "white";
-        ctx.fillRect(0,0, canvas.width, canvas.height);
-
-        // Tegner kakediagrammet på nytt
-        tegnKakediagram(data);
-    }
-
+    // Tegner linje diagrammet
+    linjeDiagram(ukeData);
 </script>
 </html>
