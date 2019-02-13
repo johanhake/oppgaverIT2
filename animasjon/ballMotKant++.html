@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ball mot kant</title>
+    <style>
+        #innpakning{
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background-color: black;
+        }
+
+        .ball{
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background-color: #7CFC00;
+        }
+    </style>
+</head>
+<body>
+<div id="innpakning"></div>
+<script>
+
+    let innpakning = document.querySelector("#innpakning");
+    let innpakningRamme = innpakning.getBoundingClientRect();
+    let antall = 0;
+
+    // Lytterfunksjon som lager en ball hvor musen er klikket
+    function lagBall(event){
+        let ball = document.createElement("div");
+        ball.className = "ball";
+        ball.style.backgroundColor = `hsl(${antall*5}, 100%, 50%)`;
+        antall += 1;
+
+        // Henter ut start verdiene
+        let startX = event.clientX-12.5;
+        let startY = event.clientY-12.5;
+
+        console.log(startX, startY);
+
+        // Lager tilfeldige stopverdier
+        let stopX, stopY;
+
+        // Finner en tilfeldig side
+        let side = Math.floor(Math.random()*4);
+        if (side === 0){
+            stopX = Math.random()*innpakningRamme.width;
+            stopY = -12.5;
+        }else if (side === 1){
+            stopX = Math.random()*innpakningRamme.width;
+            stopY = innpakningRamme.height-25;
+        }else if (side === 2){
+            stopX = -12.5;
+            stopY = Math.random()*innpakningRamme.height;
+        }else{
+            stopX = innpakningRamme.width-25;
+            stopY = Math.random()*innpakningRamme.height;
+        }
+
+        // Pythagoras for avstand
+        let avstand = Math.sqrt(Math.pow(stopX-startX, 2)+
+                                Math.pow(stopY-startY, 2));
+
+        // Legger til ballen
+        innpakning.appendChild(ball);
+
+        let keyframes = [
+            {
+                left: startX + "px",
+                top: startY + "px",
+                transform: "scale(1)",
+            },
+            {
+                left: stopX + "px",
+                top: stopY + "px",
+                transform: "scale(10)",
+            }
+                    ];
+        let timing = {
+            duration: avstand*5,
+            easing: "linear",
+            fill: "forwards"
+        };
+        let animasjon = ball.animate(keyframes, timing);
+
+        // Hva skjer når ballen er framme?
+        animasjon.onfinish = function(){
+            // Ny animasjon!
+            let animasjon2 = ball.animate([
+                {
+                    transform: "scale(10)",
+                    opacity:1
+                },
+                {
+                    transform: "scale(1)",
+                    opacity:0
+                }],
+                {
+                    duration: 500
+                });
+
+            // Når animasjon 2 er slutt tar vi bort ballen
+            animasjon2.onfinish = function(){
+                innpakning.removeChild(ball);
+            }
+        }
+    }
+
+    // Når vi holder knappen inne
+    innpakning.onmousedown = function(){
+        innpakning.onmousemove = lagBall;
+    };
+
+    innpakning.onmouseup = function(){
+        innpakning.onmousemove = function(){};
+    };
+</script>
+</body>
+</html>

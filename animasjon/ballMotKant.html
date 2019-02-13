@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ball mot kant</title>
+    <style>
+        #innpakning{
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background-color: black;
+        }
+
+        .ball{
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background-color: #7CFC00;
+        }
+    </style>
+</head>
+<body>
+<div id="innpakning" onclick="lagBall(event)"></div>
+<script>
+
+    let innpakning = document.querySelector("#innpakning");
+    let innpakningRamme = innpakning.getBoundingClientRect();
+
+    // Lytterfunksjon som lager en ball hvor musen er klikket
+    function lagBall(event){
+        let ball = document.createElement("div");
+        ball.className = "ball";
+
+        // Henter ut start verdiene
+        let startX = event.clientX-12.5;
+        let startY = event.clientY-12.5;
+
+        console.log(startX, startY);
+
+        // Lager tilfeldige stopverdier
+        let stopX, stopY;
+
+        // Finner en tilfeldig side
+        let side = Math.floor(Math.random()*4);
+        if (side === 0){
+            stopX = Math.random()*innpakningRamme.width;
+            stopY = -12.5;
+        }else if (side === 1){
+            stopX = Math.random()*innpakningRamme.width;
+            stopY = innpakningRamme.height-25;
+        }else if (side === 2){
+            stopX = -12.5;
+            stopY = Math.random()*innpakningRamme.height;
+        }else{
+            stopX = innpakningRamme.width-25;
+            stopY = Math.random()*innpakningRamme.height;
+        }
+
+        // Legger til ballen
+        innpakning.appendChild(ball);
+
+        let keyframes = [
+            {
+                left: startX + "px",
+                top: startY + "px",
+            },
+            {
+                left: stopX + "px",
+                top: stopY + "px",
+            }
+                    ];
+        let timing = {
+            duration: 2000,
+            easing: "linear"
+        };
+        let animasjon = ball.animate(keyframes, timing);
+
+        // Når animasjon 2 er slutt tar vi bort ballen
+        animasjon.onfinish = function(){
+                innpakning.removeChild(ball);
+        };
+    }
+
+</script>
+</body>
+</html>
