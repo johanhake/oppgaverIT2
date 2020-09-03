@@ -12,11 +12,13 @@
 </head>
 <body>
 <a href="../index.html">Tilbake...</a><br>
-<canvas width="500" height="300"></canvas>
+<canvas width="1000" height="600"></canvas>
 <script>
     // DOM
     let canvas = document.querySelector("canvas");
     let ctx = canvas.getContext("2d");
+    ctx.fillStyle = "black";
+    ctx.fillRect(0,0,canvas.width, canvas.height);
 
     /* Tegner en fem-takkete stjerne
      *
@@ -25,33 +27,41 @@
      * Argument (Number) verdi : verdi-koordinaten til senter
      * Argument (Number) r : radien til sirkelen som omsluter stjernen
      */
-    function tegnStjerne(ctx, x, y, radius){
+    function tegnStjerne(ctx, x, y, radius, theta=0){
         // Henter ut ting vi trenger fra Math
         const PI = Math.PI;
         const cos = Math.cos;
         const sin = Math.sin;
         const ARC = 2*PI/5;
+        const THETA = PI*theta/180;
+        console.log("THETA:", theta, THETA);
 
         ctx.beginPath();
-        ctx.moveTo(x + radius, y);
+        ctx.moveTo(x + radius*cos(THETA), y - radius*sin(THETA));
 
-        ctx.lineTo(x + radius*cos(2*ARC), y - radius*sin(2*ARC));
-        ctx.lineTo(x + radius*cos(4*ARC), y - radius*sin(4*ARC));
-        ctx.lineTo(x + radius*cos(6*ARC), y - radius*sin(6*ARC));
-        ctx.lineTo(x + radius*cos(8*ARC), y - radius*sin(8*ARC));
+        ctx.lineTo(x + radius*cos(2*ARC+THETA), y - radius*sin(2*ARC+THETA));
+        ctx.lineTo(x + radius*cos(4*ARC+THETA), y - radius*sin(4*ARC+THETA));
+        ctx.lineTo(x + radius*cos(6*ARC+THETA), y - radius*sin(6*ARC+THETA));
+        ctx.lineTo(x + radius*cos(8*ARC+THETA), y - radius*sin(8*ARC+THETA));
         ctx.closePath();
 
         ctx.strokeStyle = "black";
         ctx.lineWidth = 2;
-        ctx.stroke();
+        //ctx.stroke();
+        ctx.fillStyle = "yellow";
+        ctx.fill();
     }
 
     // Tegner en stor stjerne og fire mindre.
-    tegnStjerne(ctx, canvas.width/2, canvas.height/2, canvas.height/2);
-    tegnStjerne(ctx, canvas.width/8, canvas.height/8, canvas.height/8);
-    tegnStjerne(ctx, canvas.width/8, 7*canvas.height/8, canvas.height/8);
+    /*tegnStjerne(ctx, canvas.width/2, canvas.height/2, canvas.height/2, 25);
+    tegnStjerne(ctx, canvas.width/8, canvas.height/8, canvas.height/8, 35);
+    tegnStjerne(ctx, canvas.width/8, 7*canvas.height/8, canvas.height/8, 90);
     tegnStjerne(ctx, 7*canvas.width/8, canvas.height/8, canvas.height/8);
     tegnStjerne(ctx, 7*canvas.width/8, 7*canvas.height/8, canvas.height/8);
+*/
+    for (let i = 0; i < 1000; i++) {
+        tegnStjerne(ctx, canvas.width*Math.random(), canvas.height*Math.random(), canvas.height/30*Math.random(), 72*Math.random());
+    }
 </script>
 </body>
 </html>
